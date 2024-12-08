@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Calendar App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="index-container">
+        <h1>Welcome to Calendar App</h1>
+        <p>To get started, please sign in.</p>
+        <button onclick="window.location.href='signin.html'">Sign In</button>
+        <button onclick="window.location.href='signup.html'">Sign Up</button>
+    </div>
+
+    <!-- Firebase Initialization -->
+    <script type="module">
+        // Import the Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+
+        // Your Firebase configuration (replace this with your actual Firebase config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBS_v9aLKtqD03F538WLS0SbR3Tb2Y2Gtg",
+            authDomain: "calendarproj-d7815.firebaseapp.com",
+            projectId: "calendarproj-d7815",
+            storageBucket: "calendarproj-d7815.appspot.com",
+            messagingSenderId: "991723469626",
+            appId: "1:991723469626:web:3af4fd59015bc768e56e03",
+            measurementId: "G-S065L5SMJV"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // You can now use Firebase services like authentication, database, etc.
+        console.log('Firebase Initialized');
+    </script>
+</body>
+</html>
