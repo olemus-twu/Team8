@@ -17,6 +17,8 @@ html, body {
 /* Container styling */
 .index-container {
     text-align: center;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
     background-color: #ffffff; /* White background */
     padding: 20px;
     border-radius: 10px;
