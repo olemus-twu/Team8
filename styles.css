@@ -1,31 +1,30 @@
 styles.css
 
 
-/* Ensure full viewport height is considered for centering */
+/* Ensure full viewport height and proper centering */
 html, body {
     margin: 0;
     padding: 0;
-    height: 100%; /* Ensure html and body span the full viewport height */
+    width: 100%; /* Full width of viewport */
+    height: 100%; /* Full height of viewport */
     display: flex;
     justify-content: center; /* Horizontal centering */
     align-items: center; /* Vertical centering */
     background-color: #f5f5f5; /* Light gray background */
     font-family: Arial, sans-serif;
-    box-sizing: border-box; /* Include padding/borders in dimensions */
+    box-sizing: border-box; /* Consistent sizing */
 }
 
-/* Container styling */
+/* Centered container */
 .index-container {
     text-align: center;
-    justify-content: center; /* Horizontal centering */
-    align-items: center; /* Vertical centering */
     background-color: #ffffff; /* White background */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     max-width: 400px; /* Constrain the maximum width */
-    width: 90%; /* Responsive for smaller screens */
-    box-sizing: border-box; /* Consistent box model */
+    width: 90%; /* Make it responsive for smaller screens */
+    box-sizing: border-box; /* Consistent sizing */
 }
 
 
