@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .profile-container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <h1>Profile Details</h1>
+        <p><strong>Username:</strong> <span id="profile-username">Guest</span></p>
+        <p><strong>Email:</strong> <span id="profile-email">guest@example.com</span></p>
+        <p><strong>Bio:</strong> <span id="profile-bio">Welcome to the event calendar!</span></p>
+        <a href="profile.html">Edit Profile</a>
+        <a href="calendar.html">Back to Calendar</a>
+    </div>
+
+    <script>
+        // Load profile data into the profile view page
+        const profile = JSON.parse(localStorage.getItem('profile')) || {};
+        document.getElementById('profile-username').textContent = profile.username || 'Guest';
+        document.getElementById('profile-email').textContent = profile.email || 'guest@example.com';
+        document.getElementById('profile-bio').textContent = profile.bio || 'Welcome to the event calendar!';
+    </script>
+</body>
+
+</html>

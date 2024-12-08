@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Event</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Basic Reset */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Page Layout */
+        body {
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .add-event-container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        input, textarea, button {
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        input[type="color"] {
+            height: 40px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .back-button {
+            background-color: #cccccc;
+            color: #333333;
+            margin-top: 10px;
+        }
+
+        .back-button:hover {
+            background-color: #b3b3b3;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="add-event-container">
+        <h2>Add New Event</h2>
+        <form id="add-event-form">
+            <label for="event-name">Event Name</label>
+            <input type="text" id="event-name" name="event-name" placeholder="Enter event name" required>
+
+            <label for="event-date">Event Date</label>
+            <input type="date" id="event-date" name="event-date" required>
+
+            <label for="event-time">Event Time</label>
+            <input type="time" id="event-time" name="event-time" required>
+
+            <label for="event-description">Event Description</label>
+            <textarea id="event-description" name="event-description" placeholder="Enter event description" required></textarea>
+
+            <label for="event-color">Event Color</label>
+            <input type="color" id="event-color" name="event-color" value="#4CAF50">
+
+            <div class="form-actions">
+                <button type="submit">Save Event</button>
+                <button type="button" class="back-button" onclick="window.location.href='calendar.html'">Back to Calendar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("add-event-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Collect values from the form fields
+            const newEvent = {
+                name: document.getElementById("event-name").value,
+                date: document.getElementById("event-date").value,
+                time: document.getElementById("event-time").value,
+                description: document.getElementById("event-description").value,
+                color: document.getElementById("event-color").value,
+            };
+
+            // Retrieve existing events from localStorage or initialize an empty array
+            let events = JSON.parse(localStorage.getItem("events")) || [];
+
+            // Add the new event to the array
+            events.push(newEvent);
+
+            // Save the updated events array to localStorage
+            localStorage.setItem("events", JSON.stringify(events));
+
+            // Notify the user and redirect to the calendar
+            alert("Event added successfully!");
+            window.location.href = "calendar.html";
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Calendar</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f9;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+        }
+
+        .profile-section p {
+            margin: 5px 0;
+        }
+
+        .profile-section input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .profile-section button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .profile-section button:hover {
+            background-color: #45a049;
+        }
+
+        .calendar-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .day {
+            position: relative;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            min-height: 100px;
+        }
+
+        .event {
+            margin-top: 5px;
+            padding: 5px;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 12px;
+            position: relative;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .event-actions button {
+            padding: 3px 5px;
+            font-size: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background-color: #ff9800;
+            color: #fff;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        .edit-btn:hover {
+            background-color: #e68a00;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .add-event-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-event-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Welcome!</h2>
+        <div class="profile-section" id="profile-section">
+            <label for="username">Username:</label>
+            <input type="text" id="username" value="Guest">
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="guest@example.com">
+            <label for="bio">Bio:</label>
+            <textarea id="bio" rows="3">Welcome to the event calendar!</textarea>
+            <button id="save-profile">Save Profile</button>
+            <button id="signout-button">Sign Out</button>
+        </div>
+    </div>
+
+    <div id="calendar" class="calendar-container">
+        <!-- Days will be dynamically rendered here -->
+    </div>
+
+    <a href="addevent.html" class="add-event-button">Add New Event</a>
+
+    <!-- Edit Event Form -->
+    <div id="edit-event-form" class="edit-form" style="display: none;">
+        <h3>Edit Event</h3>
+        <label for="edit-name">Name:</label>
+        <input type="text" id="edit-name" placeholder="Event Name" required>
+        <label for="edit-date">Date:</label>
+        <input type="date" id="edit-date" required>
+        <label for="edit-time">Time:</label>
+        <input type="time" id="edit-time" required>
+        <label for="edit-color">Color:</label>
+        <input type="color" id="edit-color">
+        <label for="edit-description">Description:</label>
+        <textarea id="edit-description" placeholder="Event Description" rows="4"></textarea>
+        <button id="save-changes">Save Changes</button>
+    </div>
+
+    <script type="module">
+        import { signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { auth } from "./register.js"; // Assuming `register.js` initializes Firebase Authentication
+
+        const events = JSON.parse(localStorage.getItem('events')) || [];
+        const editForm = document.getElementById('edit-event-form');
+        const profile = JSON.parse(localStorage.getItem('profile')) || { username: 'Guest', email: 'guest@example.com', bio: 'Welcome to the event calendar!' };
+        let editEventId = null;
+
+        // Load and update profile
+        document.getElementById('username').value = profile.username || 'Guest';
+        document.getElementById('email').value = profile.email || 'guest@example.com';
+        document.getElementById('bio').value = profile.bio || 'Welcome to the event calendar!';
+
+        document.getElementById('save-profile').addEventListener('click', () => {
+            const updatedProfile = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                bio: document.getElementById('bio').value,
+            };
+            localStorage.setItem('profile', JSON.stringify(updatedProfile));
+            alert('Profile updated successfully!');
+        });
+
+        // Sign Out Functionality
+        document.getElementById('signout-button').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                alert('Signed out successfully!');
+                window.location.href = 'signin.html'; // Redirect to sign-in page
+            } catch (error) {
+                console.error('Error signing out:', error);
+                alert('Error signing out. Please try again.');
+            }
+        });
+
+        // Render the calendar and event functionality
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = ''; // Clear existing days
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const eventsByDate = {};
+            events.forEach((event, id) => {
+                if (!eventsByDate[event.date]) {
+                    eventsByDate[event.date] = [];
+                }
+                eventsByDate[event.date].push({ ...event, id });
+            });
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day).toISOString().split('T')[0];
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day';
+                dayElement.innerHTML = `<span>${day}</span>`;
+
+                if (eventsByDate[date]) {
+                    eventsByDate[date].forEach(event => {
+                        const eventElement = document.createElement('div');
+                        eventElement.className = 'event';
+                        eventElement.style.backgroundColor = event.color || '#4CAF50';
+                        eventElement.innerHTML = `
+                            <div class="name">${event.name}</div>
+                            <div class="time">${event.time}</div>
+                            <div class="description">${event.description}</div>
+                        `;
+
+                        const actions = document.createElement('div');
+                        actions.className = 'event-actions';
+
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Edit';
+                        editButton.className = 'edit-btn';
+                        editButton.onclick = () => openEditForm(event.id);
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.className = 'delete-btn';
+                        deleteButton.onclick = () => deleteEvent(event.id);
+
+                        actions.appendChild(editButton);
+                        actions.appendChild(deleteButton);
+                        eventElement.appendChild(actions);
+
+                        dayElement.appendChild(eventElement);
+                    });
+                }
+
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        function openEditForm(eventId) {
+            editEventId = eventId;
+            const event = events[eventId];
+            document.getElementById('edit-name').value = event.name;
+            document.getElementById('edit-date').value = event.date;
+            document.getElementById('edit-time').value = event.time;
+            document.getElementById('edit-color').value = event.color || '#4CAF50';
+            document.getElementById('edit-description').value = event.description;
+            editForm.style.display = 'block';
+        }
+
+        document.getElementById('save-changes').addEventListener('click', () => {
+            const updatedEvent = {
+                name: document.getElementById('edit-name').value,
+                date: document.getElementById('edit-date').value,
+                time: document.getElementById('edit-time').value,
+                color: document.getElementById('edit-color').value,
+                description: document.getElementById('edit-description').value,
+            };
+
+            events[editEventId] = updatedEvent;
+            localStorage.setItem('events', JSON.stringify(events));
+            alert('Event updated successfully!');
+            editForm.style.display = 'none';
+            renderCalendar();
+        });
+
+        function deleteEvent(eventId) {
+            if (confirm('Are you sure you want to delete this event?')) {
+                events.splice(eventId, 1);
+                localStorage.setItem('events', JSON.stringify(events));
+                alert('Event deleted successfully!');
+                renderCalendar();
+            }
+        }
+
+        renderCalendar();
+    </script>
+</body>
+
+</html>
+<script type="module">
+    import { persistEvents, renderCalendar } from "./script.js";
+
+    window.addEventListener("beforeunload", persistEvents);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderCalendar();
+    });
+</script>
+</body>

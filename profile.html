@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .profile-container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            text-align: left;
+            font-weight: bold;
+        }
+
+        input, textarea, button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <h1>Edit Profile</h1>
+        <form id="profile-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter your username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+
+            <label for="bio">Bio:</label>
+            <textarea id="bio" rows="4" placeholder="Tell us about yourself"></textarea>
+
+            <button type="submit">Save Profile</button>
+        </form>
+    </div>
+
+    <script>
+        // Load existing profile data into the form
+        const profile = JSON.parse(localStorage.getItem('profile')) || {};
+        document.getElementById('username').value = profile.username || '';
+        document.getElementById('email').value = profile.email || '';
+        document.getElementById('bio').value = profile.bio || '';
+
+        // Save profile data to localStorage
+        document.getElementById('profile-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const updatedProfile = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                bio: document.getElementById('bio').value
+            };
+            localStorage.setItem('profile', JSON.stringify(updatedProfile));
+            alert('Profile saved successfully!');
+            window.location.href = 'calendar.html'; // Redirect to the calendar
+        });
+    </script>
+</body>
+
+</html>
